@@ -3,6 +3,14 @@ import subprocess, time, os, sys
 CPLEX_BIN_PATH = "/opt/ibm/ILOG/CPLEX_Studio_Community128/cplex/bin/x86-64_linux/"
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
+
+def getInputs():
+    x = input("X? ")
+    y = input("Y? ")
+    z = input("Z? ")
+    return x, y, z
+
+
 def executeCPLEX(tmLocation):
     statement = CPLEX_BIN_PATH + 'cplex -c "read ' + tmLocation + '" "optimize" "display solution variables -"'
     process = subprocess.run(statement, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
@@ -29,3 +37,6 @@ for h in range(1, 19, 1):
     returnValue = executeCPLEX(DIR_PATH + "/tm.lp")
     extractSolution("x12", returnValue, h)
     extractSolution("x132", returnValue, h)
+
+def main():
+    x, y, z = getInputs()
