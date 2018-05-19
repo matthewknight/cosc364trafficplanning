@@ -18,7 +18,6 @@ def initial_setup():
     print("Minimize \n r \nSubject to")
 
 
-
 def calc_demand_volumes(x, y, z):
     toPrint = ""
     for i in range(1, x+1):
@@ -31,7 +30,6 @@ def calc_demand_volumes(x, y, z):
                 else:
                     toPrint += " + x{0}{2}{1}".format(i, j, k)
             toPrint += " = {}\n".format(h)
-
     print(toPrint)
 
 
@@ -41,6 +39,17 @@ def calc_demand_flow(x, y, z, num_paths=3):
             for j in range(1, y + 1):
                 path = "{0}{1}{2}".format(i, k, j)
                 print("DemandFlow{0}: {1} x{0} - {2} u{0} = 0".format(path, num_paths, i + j))
+
+def calc_demand_volume_constraints(x, y, z):
+    for i in range(1, x + 1):
+        for j in range(1, z + 1):
+            print("DemandVolume{}{} >= 0".format(i, j))
+
+def calc_demand_flow_constraint(x, y, z):
+    for i in range(1, x + 1):
+        for j in range(1, z + 1):
+            for k in range(1, y + 1):
+                print("DemandFlow{}{}{} >= 0".format(i, k, j))
 
 
 def calc_bounds(x, y, z):
@@ -100,6 +109,8 @@ def main():
     initial_setup()
     calc_demand_volumes(x, y, z)
     calc_demand_flow(x, y, z)
+    calc_demand_volume_constraints(x, y, z)
+    calc_demand_flow_constraint(x, y, z)
     calc_bounds(x, y, z)
     calc_binaries(x, y, z)
 main()
