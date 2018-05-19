@@ -31,15 +31,17 @@ def calc_demand_volumes(x, y, z):
                 else:
                     toPrint += " + x{0}{2}{1}".format(i, j, k)
             toPrint += " = {}\n".format(h)
+
     print(toPrint)
 
 
-def calc_demand_flow(x, y, z, paths=3):
+def calc_demand_flow(x, y, z, num_paths=3):
     for i in range(1, x + 1):
-        for j in range(1, z + 1):
-            for k in range(1, y + 1):
-                l = "{}{}{}".format(i, k, j)
-                print(" demandflow{}: {} x{} - {} u{} = 0".format(l, paths, l, i + j, l))
+        for k in range(1, z + 1):
+            for j in range(1, y + 1):
+                path = "{0}{1}{2}".format(i, k, j)
+                print("DemandFlow{0}: {1} x{0} - {2} u{0} = 0".format(path, num_paths, i + j))
+
 
 def calc_bounds(x, y, z):
     print("Bounds")
