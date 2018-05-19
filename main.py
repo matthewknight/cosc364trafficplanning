@@ -16,13 +16,22 @@ def get_inputs():
 
 def initial_setup():
     print("Minimize \n r \nSubject to")
-    print("Demand flow")
+
 
 
 def calc_demand_volumes(x, y, z):
+    toPrint = ""
     for i in range(1, x+1):
         for j in range(1, z+1):
-            print(" h{}{} = {}".format(i, j, i+j))
+            h = i + j
+            for k in range(1, y+1):
+
+                if k == 1:
+                    toPrint += "DemandVolume{0}{1}: x{0}{2}{1}".format(i, j, k)
+                else:
+                    toPrint += " + x{0}{2}{1}".format(i, j, k)
+            toPrint += " = {}\n".format(h)
+    print(toPrint)
 
 
 def calc_demand_flow(x, y, z, paths=3):
@@ -46,6 +55,16 @@ def calc_bounds(x, y, z):
         for k in range(1, y + 1):
             print(" d{2}{3} >= 0".format(k, j, k, j))
     print(" r >= 0")
+
+
+def calc_binaries(x, y, z):
+    for i in range(1, x + 1):
+        for k in range(1, y + 1):
+            for j in range(1, z + 1):
+                print(" u{0}{1}{2}".format(i, k, j))
+
+
+
 
 def executeCPLEX(tmLocation):
     statement = CPLEX_BIN_PATH + 'cplex -c "read ' + tmLocation + '" "optimize" "display solution variables -"'
@@ -80,5 +99,5 @@ def main():
     calc_demand_volumes(x, y, z)
     calc_demand_flow(x, y, z)
     calc_bounds(x, y, z)
-
+    calc_binaries(x, y, z)
 main()
