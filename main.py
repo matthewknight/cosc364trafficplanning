@@ -15,16 +15,14 @@ def get_inputs():
 
 
 def initial_setup():
-    print("Minimize")
-    print(" obj: ***Objective Function***")
-    print(" Subject to")
-    print(" Demand flow")
+    print("Minimize \n r \nSubject to")
+    print("Demand flow")
 
 
 def calc_demand_volumes(x, y, z):
     for i in range(1, x+1):
         for j in range(1, z+1):
-            print("h{}{} = {}".format(i, j, i+j))
+            print(" h{}{} = {}".format(i, j, i+j))
 
 
 def calc_demand_flow(x, y, z, paths=3):
@@ -40,14 +38,14 @@ def calc_bounds(x, y, z):
         for j in range(1, z + 1):
             for k in range(1, y + 1):
                 l = str(i) + str(j) + str(k)
-                print("    x{} >= 0".format(l, l))
+                print(" x{} >= 0".format(l, l))
     for i in range(1, x + 1):
         for k in range(1, y + 1):
-            print("    c{2}{3} >= 0".format(i, k, i, k))
+            print(" c{2}{3} >= 0".format(i, k, i, k))
     for j in range(1, z + 1):
         for k in range(1, y + 1):
-            print("    d{2}{3} >= 0".format(k, j, k, j))
-    print("    r >= 0")
+            print(" d{2}{3} >= 0".format(k, j, k, j))
+    print(" r >= 0")
 
 def executeCPLEX(tmLocation):
     statement = CPLEX_BIN_PATH + 'cplex -c "read ' + tmLocation + '" "optimize" "display solution variables -"'
@@ -81,5 +79,6 @@ def main():
     initial_setup()
     calc_demand_volumes(x, y, z)
     calc_demand_flow(x, y, z)
+    calc_bounds(x, y, z)
 
 main()
