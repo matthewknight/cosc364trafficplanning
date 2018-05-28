@@ -16,7 +16,7 @@ def get_inputs():
     return int(x), int(y), int(z)
 
 
-def initial_setup():
+def initial_statements():
     print("Minimize \n p \nSubject to")
 
 
@@ -94,18 +94,18 @@ def create_lp_file():
 
     return 0
 
-def run_cplex(filename):
-    """"Script for building and running Cplex based on .lp file input"""
+def run_cplex(lp_filename):
+    """"Builds and runs CPLEX with the .lp file created"""
 
-    command = "/home/cosc/student/sbo49/cplex/cplex/bin/x86-64_linux/cplex" #GET CORRECT
+    cplex_command = "/home/cosc/student/sbo49/cplex/cplex/bin/x86-64_linux/cplex" #GET CORRECT
     args = [
         "-c",
-        "read /home/cosc/student/sbo49/cosc364/cosc364assignment/" + filename,
+        "read /home/cosc/student/sbo49/cosc364/cosc364assignment/" + lp_filename,
         "optimize",
-        'display solution variables -'
+        'display solution variables'
     ]
 
-    process = subprocess.Popen([command] + args, stdout=subprocess.PIPE)
+    process = subprocess.Popen([cplex_command] + args, stdout=subprocess.PIPE)
     out, err = process.communicate()
     result = out.decode("utf-8")
 
@@ -115,17 +115,22 @@ def run_cplex(filename):
 
 def main():
     x, y, z = get_inputs()
-    initial_setup()
+    initial_statements()
     calc_demand_volumes(x, y, z)
     calc_demand_flow(x, y, z)
     calc_utilisation_constraints(x, y, z)
     calc_bounds(x, y, z)
     calc_binaries(x, y, z)
+
+
     filename = create_lp_file()
 
     #Start Timer, then run cplex, and get time taken at the end
     start_time = datetime.now()
-    #result = run_cplex(filename)
+    result = run_cplex(filename)
     time_to_run = datetime.now() - start_time
     print("Time to run =", time_to_run)
-main()
+
+
+if __name__ == "__main__":
+    main()
