@@ -15,7 +15,7 @@ def get_inputs():
 
 
 def initial_setup():
-    print("Minimize \n 1 \nSubject to")
+    print("Minimize \n p \nSubject to")
 
 
 def calc_demand_volumes(x, y, z):
@@ -40,7 +40,29 @@ def calc_demand_flow(x, y, z, num_paths=3):
                 path = "{0}{1}{2}".format(i, k, j)
                 print("DemandFlow{0}: {1} x{0} - {2} u{0} = 0".format(path, num_paths, i + j))
 
+#TODO
+def calc_source_node_constraints(x, y, z, num_paths=3):
+    pass
 
+def calc_dest_node_constraints(x, y, z, num_paths=3):
+    pass
+
+def calc_trans_node_constraints(x, y, z, num_paths=3):
+    pass
+
+
+def calc_utilisation_constraints(x, y, z, num_paths=3):
+    """Calculates the Utilisation Constraints for each of the transit nodes"""
+    print("Utilisation")
+    for i in range(1, x+1):
+        for j in range(1, z+1):
+            for k in range(1, y+1):
+                if k == 1:
+                    print(" u{}{}{}".format(i, k, j), end="")
+                elif k == y:
+                    print("+u{}{}{} = {}".format(i, k, j, 3))
+                else:
+                    print("+u{}{}{}".format(i, k, j), end="")
 
 def calc_bounds(x, y, z):
     print("Bounds")
@@ -55,10 +77,11 @@ def calc_bounds(x, y, z):
     for j in range(1, z + 1):
         for k in range(1, y + 1):
             print(" d{2}{3} >= 0".format(k, j, k, j))
-    print(" r >= 0")
+    print(" p >= 0")
 
 
 def calc_binaries(x, y, z):
+    print("Binaries")
     for i in range(1, x + 1):
         for k in range(1, y + 1):
             for j in range(1, z + 1):
@@ -99,8 +122,7 @@ def main():
     initial_setup()
     calc_demand_volumes(x, y, z)
     calc_demand_flow(x, y, z)
-    calc_demand_volume_constraints(x, y, z)
-    calc_demand_flow_constraint(x, y, z)
+    calc_utilisation_constraints(x, y, z)
     calc_bounds(x, y, z)
     calc_binaries(x, y, z)
 main()
