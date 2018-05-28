@@ -15,7 +15,7 @@ def get_inputs():
 
 
 def initial_setup():
-    print("Minimize \n r \nSubject to")
+    print("Minimize \n 1 \nSubject to")
 
 
 def calc_demand_volumes(x, y, z):
@@ -40,16 +40,6 @@ def calc_demand_flow(x, y, z, num_paths=3):
                 path = "{0}{1}{2}".format(i, k, j)
                 print("DemandFlow{0}: {1} x{0} - {2} u{0} = 0".format(path, num_paths, i + j))
 
-def calc_demand_volume_constraints(x, y, z):
-    for i in range(1, x + 1):
-        for j in range(1, z + 1):
-            print("DemandVolume{}{} >= 0".format(i, j))
-
-def calc_demand_flow_constraint(x, y, z):
-    for i in range(1, x + 1):
-        for j in range(1, z + 1):
-            for k in range(1, y + 1):
-                print("DemandFlow{}{}{} >= 0".format(i, k, j))
 
 
 def calc_bounds(x, y, z):
