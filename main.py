@@ -1,4 +1,6 @@
-import subprocess, time, os, sys
+import sys
+import subprocess
+from datetime import datetime
 
 
 def get_inputs():
@@ -88,34 +90,28 @@ def calc_binaries(x, y, z):
                 print(" u{0}{1}{2}".format(i, k, j))
 
 
+def create_lp_file():
+
+    return 0
+
+def run_cplex(filename):
+    """"Script for building and running Cplex based on .lp file input"""
+
+    command = "/home/cosc/student/sbo49/cplex/cplex/bin/x86-64_linux/cplex" #GET CORRECT
+    args = [
+        "-c",
+        "read /home/cosc/student/sbo49/cosc364/cosc364assignment/" + filename,
+        "optimize",
+        'display solution variables -'
+    ]
+
+    process = subprocess.Popen([command] + args, stdout=subprocess.PIPE)
+    out, err = process.communicate()
+    result = out.decode("utf-8")
+
+    return result
 
 
-def executeCPLEX(tmLocation):
-    statement = CPLEX_BIN_PATH + 'cplex -c "read ' + tmLocation + '" "optimize" "display solution variables -"'
-    process = subprocess.run(statement, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
-    return process.stdout
-
-
-def extractSolution(variable, cplexReturn, hValue):
-    for line in cplexReturn.split("\n"):
-        if line.startswith(variable):
-            solution = line.split()
-            solution.append(hValue)
-            print(solution)
-            # TODO log solutions -> graph? hah
-
-def wahtDo():
-    for h in range(1, 19, 1):
-        fileString = "Minimize\n 10 x12 + 5 x x132\n Subject to\n demandflow: x12 + x132 =" + str(h)
-        fileString += "\n capp1: x12 <= 10\n capp2: x132 <= 10\nBounds\n 0 <= x12\n 0 <= x132\nEnd"
-        f = open("tm.lp", "w+")
-        f.write(fileString)
-        fileToUse = open("tm.lp", "r")
-        f.close()
-
-        returnValue = executeCPLEX(DIR_PATH + "/tm.lp")
-        extractSolution("x12", returnValue, h)
-        extractSolution("x132", returnValue, h)
 
 def main():
     x, y, z = get_inputs()
@@ -125,4 +121,11 @@ def main():
     calc_utilisation_constraints(x, y, z)
     calc_bounds(x, y, z)
     calc_binaries(x, y, z)
+    filename = create_lp_file()
+
+    #Start Timer, then run cplex, and get time taken at the end
+    start_time = datetime.now()
+    #result = run_cplex(filename)
+    time_to_run = datetime.now() - start_time
+    print("Time to run =", time_to_run)
 main()
