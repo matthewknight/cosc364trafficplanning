@@ -135,7 +135,7 @@ def create_lp_file(fileToWrite, text):
 def run_cplex(lp_filename):
     """"Builds and runs CPLEX with the .lp file created"""
 
-    cplex_command = "/home/cosc/student/sbo49/cplex/cplex/bin/x86-64_linux/cplex" #GET CORRECT
+    cplex_command = "/home/cosc/student/sbo49/COSC364/cplex/cplex/bin/x86-64_linux/cplex" #GET CORRECT
     args = [
         "-c",
         "read /home/cosc/student/sbo49/cosc364/cosc364assignment/" + lp_filename,
