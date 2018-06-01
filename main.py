@@ -47,12 +47,12 @@ def calc_demand_flow(x, y, z, num_paths=3):
     return toReturn
 
 def calc_source_node_constraints(x, y, z):
-    toReturn = "SrcConstraints\n"
+    toReturn = ""
     for i in range(1, x+1):
         for j in range(1, y+1):
             for k in range(1, z+1):
                 if k == 1:
-                    toReturn += (" x{}{}{}".format(i, j, k))
+                    toReturn += ("SrcConstraints: x{}{}{}".format(i, j, k))
                 elif k < z:
                     toReturn += (" + x{}{}{}".format(i, j, k))
                 else:
@@ -60,12 +60,12 @@ def calc_source_node_constraints(x, y, z):
     return toReturn
 
 def calc_dest_node_constraints(x, y, z):
-    toReturn = "DstConstraints\n"
+    toReturn = ""
     for i in range(1, z + 1):
         for j in range(1, y + 1):
             for k in range(1, x + 1):
                 if k == 1:
-                    toReturn += (" x{}{}{}".format(k, j, i))
+                    toReturn += ("DstConstraints: x{}{}{}".format(k, j, i))
                 elif k < z:
                     toReturn += (" + x{}{}{}".format(k, j, i))
                 else:
@@ -73,12 +73,12 @@ def calc_dest_node_constraints(x, y, z):
     return toReturn
 
 def calc_trans_node_constraints(x, y, z):
-    toReturn = "TransConstraints\n"
+    toReturn = ""
     for i in range(1, y+1):
         for j in range(1, x+1):
             for k in range(1, z+1):
                 if j == 1 and k == 1:
-                    toReturn += " x{}{}{}".format(j, i, k)
+                    toReturn += "TransConstraints: x{}{}{}".format(j, i, k)
                 elif j == x and k == z:
                     toReturn += " + x{}{}{} - p <= 0\n".format(j, i, k)
                 else:
@@ -88,12 +88,12 @@ def calc_trans_node_constraints(x, y, z):
 
 def calc_utilisation_constraints(x, y, z, num_paths=3):
     """Calculates the Utilisation Constraints for each of the transit nodes"""
-    toReturn = "Utilisation\n"
+    toReturn = ""
     for i in range(1, x+1):
         for j in range(1, z+1):
             for k in range(1, y+1):
                 if k == 1:
-                    toReturn += " u{}{}{}".format(i, k, j)
+                    toReturn += "Utilisation: u{}{}{}".format(i, k, j)
                 elif k == y:
                     toReturn += " + u{}{}{} = {}\n".format(i, k, j, 3)
                 else:
@@ -135,10 +135,10 @@ def create_lp_file(fileToWrite, text):
 def run_cplex(lp_filename):
     """"Builds and runs CPLEX with the .lp file created"""
 
-    cplex_command = "/home/cosc/student/sbo49/COSC364/cplex/cplex/bin/x86-64_linux/cplex" #GET CORRECT
+    cplex_command = "/home/cosc/student/sbo49/COSC364/cplex/bin/x86-64_linux/cplex" #GET CORRECT
     args = [
         "-c",
-        "read /home/cosc/student/sbo49/COSC364/cosc364trefficplanning/" + lp_filename,
+        "read /home/cosc/student/sbo49/COSC364/cosc364trafficplanning/" + lp_filename,
         "optimize",
         'display solution variables -'
     ]
@@ -170,7 +170,7 @@ def main():
     result = run_cplex(FILE_TO_WRITE)
     time_to_run = datetime.now() - start_time
     print("\n\nTime to run =", time_to_run)
-    print result
+    #print(result)
 
 
 if __name__ == "__main__":
