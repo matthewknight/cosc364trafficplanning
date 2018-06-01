@@ -17,80 +17,115 @@ def get_inputs():
 
 
 def initial_statements():
-    print("Minimize \n p \nSubject to")
+    return "Minimize \n p \nSubject to\n"
 
 
 def calc_demand_volumes(x, y, z):
-    toPrint = ""
+    toReturn = ""
     for i in range(1, x+1):
         for j in range(1, z+1):
             h = i + j
             for k in range(1, y+1):
-
                 if k == 1:
-                    toPrint += "DemandVolume{0}{1}: x{0}{2}{1}".format(i, j, k)
+                    toReturn += "DemandVolume{0}{1}: x{0}{2}{1}".format(i, j, k)
                 else:
-                    toPrint += " + x{0}{2}{1}".format(i, j, k)
-            toPrint += " = {}\n".format(h)
-    print(toPrint)
+                    toReturn += " + x{0}{2}{1}".format(i, j, k)
+            toReturn += " = {}\n".format(h)
+
+    return toReturn
 
 
 def calc_demand_flow(x, y, z, num_paths=3):
+    toReturn = ""
     for i in range(1, x + 1):
         for k in range(1, z + 1):
             for j in range(1, y + 1):
                 path = "{0}{1}{2}".format(i, k, j)
-                print("DemandFlow{0}: {1} x{0} - {2} u{0} = 0".format(path, num_paths, i + j))
+                toReturn += "DemandFlow{0}: {1} x{0} - {2} u{0} = 0\n".format(path, num_paths, i + j)
 
-#TODO
-def calc_source_node_constraints(x, y, z, num_paths=3):
-    pass
+    return toReturn
 
-def calc_dest_node_constraints(x, y, z, num_paths=3):
-    pass
+def calc_source_node_constraints(x, y, z):
+    toReturn = "SrcConstraints\n"
+    for i in range(1, x+1):
+        for j in range(1, y+1):
+            for k in range(1, z+1):
+                if k == 1:
+                    toReturn += (" x{}{}{}".format(i, j, k))
+                elif k < z:
+                    toReturn += (" + x{}{}{}".format(i, j, k))
+                else:
+                    toReturn += (" + x{}{}{} - c{}{} = 0\n".format(i, j, k, i, j))
+    return toReturn
 
-def calc_trans_node_constraints(x, y, z, num_paths=3):
-    pass
+def calc_dest_node_constraints(x, y, z):
+    toReturn = "DstConstraints\n"
+    for i in range(1, z + 1):
+        for j in range(1, y + 1):
+            for k in range(1, x + 1):
+                if k == 1:
+                    toReturn += (" x{}{}{}".format(k, j, i))
+                elif k < z:
+                    toReturn += (" + x{}{}{}".format(k, j, i))
+                else:
+                    toReturn += (" + x{}{}{} - d{}{} = 0\n".format(k, j, i, j, i))
+    return toReturn
+
+def calc_trans_node_constraints(x, y, z):
+    toReturn = "TransConstraints\n"
+    for i in range(1, y+1):
+        for j in range(1, x+1):
+            for k in range(1, z+1):
+                if j == 1 and k == 1:
+                    toReturn += " x{}{}{}".format(j, i, k)
+                elif j == x and k == z:
+                    toReturn += " + x{}{}{} - p <= 0\n".format(j, i, k)
+                else:
+                    toReturn += " + x{}{}{}".format(j, i, k)
+    return toReturn
 
 
 def calc_utilisation_constraints(x, y, z, num_paths=3):
     """Calculates the Utilisation Constraints for each of the transit nodes"""
-    print("Utilisation")
+    toReturn = "Utilisation\n"
     for i in range(1, x+1):
         for j in range(1, z+1):
             for k in range(1, y+1):
                 if k == 1:
-                    print(" u{}{}{}".format(i, k, j), end="")
+                    toReturn += " u{}{}{}".format(i, k, j)
                 elif k == y:
-                    print("+u{}{}{} = {}".format(i, k, j, 3))
+                    toReturn += " + u{}{}{} = {}\n".format(i, k, j, 3)
                 else:
-                    print("+u{}{}{}".format(i, k, j), end="")
+                    toReturn += " + u{}{}{}".format(i, k, j)
+    return toReturn
 
 def calc_bounds(x, y, z):
-    print("Bounds")
+    toReturn = "Bounds\n"
     for i in range(1, x + 1):
-        for j in range(1, z + 1):
-            for k in range(1, y + 1):
+        for j in range(1, y + 1):
+            for k in range(1, z + 1):
                 l = str(i) + str(j) + str(k)
-                print(" x{} >= 0".format(l, l))
+                toReturn += " x{} >= 0\n".format(l, l)
     for i in range(1, x + 1):
         for k in range(1, y + 1):
-            print(" c{2}{3} >= 0".format(i, k, i, k))
+            toReturn += " c{2}{3} >= 0\n".format(i, k, i, k)
     for j in range(1, z + 1):
         for k in range(1, y + 1):
-            print(" d{2}{3} >= 0".format(k, j, k, j))
-    print(" p >= 0")
+            toReturn += " d{2}{3} >= 0\n".format(k, j, k, j)
+    toReturn += " p >= 0\n"
+    return toReturn
 
 
 def calc_binaries(x, y, z):
-    print("Binaries")
+    toReturn = "Binaries\n"
     for i in range(1, x + 1):
         for k in range(1, y + 1):
             for j in range(1, z + 1):
-                print(" u{0}{1}{2}".format(i, k, j))
+                toReturn += " u{0}{1}{2}\n".format(i, k, j)
+    return toReturn
 
 
-def create_lp_file():
+def create_lp_file(text):
 
     return 0
 
@@ -115,19 +150,23 @@ def run_cplex(lp_filename):
 
 def main():
     x, y, z = get_inputs()
-    initial_statements()
-    calc_demand_volumes(x, y, z)
-    calc_demand_flow(x, y, z)
-    calc_utilisation_constraints(x, y, z)
-    calc_bounds(x, y, z)
-    calc_binaries(x, y, z)
+    lp_text = ""
 
-
-    filename = create_lp_file()
+    lp_text += initial_statements()
+    lp_text += calc_demand_volumes(x, y, z)
+    lp_text += calc_demand_flow(x, y, z)
+    lp_text += calc_source_node_constraints(z, y, z)
+    lp_text += calc_dest_node_constraints(x, y, z)
+    lp_text += calc_trans_node_constraints(x, y, z)
+    lp_text += calc_utilisation_constraints(x, y, z)
+    lp_text += calc_bounds(x, y, z)
+    lp_text += calc_binaries(x, y, z)
+    print(lp_text)
+    filename = create_lp_file(lp_text)
 
     #Start Timer, then run cplex, and get time taken at the end
     start_time = datetime.now()
-    result = run_cplex(filename)
+    #result = run_cplex(filename)
     time_to_run = datetime.now() - start_time
     print("Time to run =", time_to_run)
 
