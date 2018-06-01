@@ -138,9 +138,9 @@ def run_cplex(lp_filename):
     cplex_command = "/home/cosc/student/sbo49/COSC364/cplex/cplex/bin/x86-64_linux/cplex" #GET CORRECT
     args = [
         "-c",
-        "read /home/cosc/student/sbo49/cosc364/cosc364assignment/" + lp_filename,
+        "read /home/cosc/student/sbo49/COSC364/cosc364trefficplanning/" + lp_filename,
         "optimize",
-        'display solution variables'
+        'display solution variables -'
     ]
 
     process = subprocess.Popen([cplex_command] + args, stdout=subprocess.PIPE)
@@ -167,9 +167,10 @@ def main():
     create_lp_file(FILE_TO_WRITE, lp_text)
     #Start Timer, then run cplex, and get time taken at the end
     start_time = datetime.now()
-    #result = run_cplex(FILE_TO_WRITE)
+    result = run_cplex(FILE_TO_WRITE)
     time_to_run = datetime.now() - start_time
     print("\n\nTime to run =", time_to_run)
+    print result
 
 
 if __name__ == "__main__":
