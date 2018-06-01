@@ -2,6 +2,7 @@ import sys
 import subprocess
 from datetime import datetime
 
+FILE_TO_WRITE = "assignment2.lp"
 
 def get_inputs():
     #for testing to make things easier
@@ -125,9 +126,11 @@ def calc_binaries(x, y, z):
     return toReturn
 
 
-def create_lp_file(text):
+def create_lp_file(fileToWrite, text):
+    file = open(fileToWrite, "w")
+    file.write(text)
+    file.close()
 
-    return 0
 
 def run_cplex(lp_filename):
     """"Builds and runs CPLEX with the .lp file created"""
@@ -147,11 +150,10 @@ def run_cplex(lp_filename):
     return result
 
 
-
 def main():
+
     x, y, z = get_inputs()
     lp_text = ""
-
     lp_text += initial_statements()
     lp_text += calc_demand_volumes(x, y, z)
     lp_text += calc_demand_flow(x, y, z)
@@ -161,14 +163,13 @@ def main():
     lp_text += calc_utilisation_constraints(x, y, z)
     lp_text += calc_bounds(x, y, z)
     lp_text += calc_binaries(x, y, z)
-    print(lp_text)
-    filename = create_lp_file(lp_text)
-
+    lp_text += "END"
+    create_lp_file(FILE_TO_WRITE, lp_text)
     #Start Timer, then run cplex, and get time taken at the end
     start_time = datetime.now()
-    #result = run_cplex(filename)
+    #result = run_cplex(FILE_TO_WRITE)
     time_to_run = datetime.now() - start_time
-    print("Time to run =", time_to_run)
+    print("\n\nTime to run =", time_to_run)
 
 
 if __name__ == "__main__":
